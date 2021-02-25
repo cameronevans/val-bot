@@ -2,6 +2,8 @@ const { exec } = require('child_process');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+const pruneColorization = message => message.replace(/\\x.*m/, '');
+
 client.on('message', message => {
   if (message.content === '!status') {
       exec(`/home/vhserver/vhserver dt | grep -A 8 'Valheim Server Details'`, (error, stdout, stderr) => {
@@ -13,7 +15,7 @@ client.on('message', message => {
             message.channel.send(`stderr: ${stderr}`);
             return;
         }
-        message.channel.send(stdout);
+        message.channel.send(pruneColorization(stdout));
     });
   }
 });
