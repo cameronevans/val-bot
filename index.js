@@ -2,11 +2,9 @@ const { exec } = require('child_process');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const pruneColorization = message => message.replace(/\\x.*m/, '');
-
 client.on('message', message => {
   if (message.content === '!status') {
-      exec(`/home/vhserver/vhserver dt | grep -A 8 'Valheim Server Details'`, (error, stdout, stderr) => {
+      exec(`/home/vhserver/vhserver dt | grep -A 8 'Valheim Server Details' | sed -e "s/\x1b\[.\{1,5\}m//g"`, (error, stdout, stderr) => {
         if (error) {
             message.channel.send(`error: ${error.message}`);
             return;
