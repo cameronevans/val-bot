@@ -3,9 +3,8 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 client.on('message', message => {
-  let response = 'Something broke! Blame @smingers';
   if (message.content === '!status') {
-      exec(`/home/vhserver dt | grep -A 8 'Valheim Server Details'`, (error, stdout, stderr) => {
+      exec(`/home/vhserver/vhserver dt | grep -A 8 'Valheim Server Details'`, (error, stdout, stderr) => {
         if (error) {
             message.channel.send(`error: ${error.message}`);
             return;
@@ -14,7 +13,7 @@ client.on('message', message => {
             message.channel.send(`stderr: ${stderr}`);
             return;
         }
-        message.channel.send(response);
+        message.channel.send(stdout);
     });
   }
 });
