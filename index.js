@@ -3,47 +3,50 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 const VHSERVER = '/home/vhserver/vhserver';
-const helpCommand = '!help';
-const helpAdminCommand = '!help-admin';
-const statusCommand = '!status';
-const usageCommand = '!usage';
-const startCommand = '!start';
-const stopCommand = '!stop';
-const restartCommand = '!restart';
-const netstatCommand = '!netstat';
-const validateCommand = '!validate';
-const backupCommand = '!backup';
-const listBackupCommand = '!list-backup';
-const updateCommand = '!update';
-const updateLGSMCommand = '!update-lgsm';
+const help = '!help';
+const helpVerbose = '!help-verbose';
+const helpAdmin = '!help-admin';
+const status = '!status';
+const usage = '!usage';
+const start = '!start';
+const stop = '!stop';
+const restart = '!restart';
+const netstat = '!netstat';
+const validate = '!validate';
+const backup = '!backup';
+const listBackup = '!list-backup';
+const checkUpdate = '!check-update';
+const update = '!update';
+const updateLGSM = '!update-lgsm';
 
 const commands = [
-  helpCommand,
+  help,
   helpVerbose,
-  helpAdminCommand,
-  statusCommand,
-  usageCommand,
-  startCommand,
-  stopCommand,
-  restartCommand,
+  helpAdmin,
+  status,
+  usage,
+  start,
+  stop,
+  restart,
 ];
 const adminCommands = [
-  netstatCommand,
-  validateCommand,
-  backupCommand,
-  updateCommand,
-  updateLGSMCommand,
+  netstat,
+  validate,
+  backup,
+  checkUpdate,
+  update,
+  updateLGSM,
 ];
 
-const verbose = {
-  [helpCommand]: 'lists basic commands',
-  [helpAdminCommand]: 'lists admin commands',
-  [statusCommand]: 'displays server online status & details',
-  [usageCommand]: 'displays server current CPU/Memory/Storage usage',
-  [startCommand]: 'starts the valheim server',
-  [stopCommand]: 'stops the valheim server gracefully',
-  [restartCommand]: 'restarts the valheim server',
-};
+const verbose = [
+  [help, 'lists basic commands'],
+  [helpAdmin, 'lists admin commands'],
+  [status, 'displays server online status & details'],
+  [usage, 'displays server current CPU/Memory/Storage usage'],
+  [start, 'starts the valheim server'],
+  [stop, 'stops the valheim server gracefully'],
+  [restart, 'restarts the valheim server'],
+];
 const confirmationMessages = [
   'One moment please...',
   'You got it...',
@@ -62,6 +65,7 @@ const confirmationMessages = [
 ];
 const vhserverCommand = (command) => `${VHSERVER} ${command}`;
 const grepDetails = (grep, lines = 8) =>
+  /* eslint-disable-next-line no-useless-escape */
   `/home/vhserver/vhserver dt | grep -A ${lines} '${grep}' | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`;
 const formatter = (message) => `\`\`\`\n${message}\n\`\`\``;
 
@@ -86,68 +90,68 @@ client.on('message', (message) => {
 
   if ([...commands, ...adminCommands].includes(message.content)) {
     switch (message.content) {
-      case '!help':
+      case help:
         message.channel
           .send(`Hi! I can communicate with the Valheim server for you.\nCommands: \`${commands.join(
           '`, `'
         )}\`
         `);
         break;
-      case '!help-verbose':
+      case helpVerbose:
         message.channel
-          .send(`Hi! I can communicate with the Valheim server for you.\nCommands: \`${verbose.map(
-          (command, description) => `\`${command}\`: ${description}\n`
-        )}\`
+          .send(`Hi! I can communicate with the Valheim server for you.\n${verbose
+          .map(([command, description]) => `\`${command}\`: ${description}`)
+          .join('\n')}
         `);
         break;
-      case '!help-admin':
+      case helpAdmin:
         message.channel.send(
-          `Admin commands **use at your own risk**: ${adminCommands.join(
+          `Admin commands **(use at your own risk)**: \`${adminCommands.join(
             '`, `'
           )}\``
         );
         break;
-      case '!status':
+      case status:
         confirmMessage();
         exec(grepDetails('Valheim Server Details'), cb);
         break;
-      case '!usage':
+      case usage:
         confirmMessage();
         exec(grepDetails('Game Server Resource Usage'), cb);
         break;
-      case '!start':
+      case start:
         confirmMessage();
         exec(vhserverCommand('start'), cb);
         break;
-      case '!stop':
+      case stop:
         confirmMessage();
         exec(vhserverCommand('stop'), cb);
         break;
-      case '!restart':
+      case restart:
         confirmMessage();
         exec(vhserverCommand('restart'), cb);
         break;
-      case '!netstat':
+      case netstat:
         confirmMessage();
         exec('netstat -atunp | grep valheim', cb);
         break;
-      case '!validate':
+      case validate:
         confirmMessage();
         exec(vhserverCommand('validate'), cb);
         break;
-      case '!check-update':
+      case checkUpdate:
         confirmMessage();
         exec(vhserverCommand('check-update'), cb);
         break;
-      case '!update':
+      case update:
         confirmMessage();
         exec(vhserverCommand('update'), cb);
         break;
-      case '!list-backup':
+      case listBackup:
         confirmMessage();
         exec(grepDetails('Backups'), 4, cb);
         break;
-      case '!backup':
+      case backup:
         confirmMessage();
         exec(vhserverCommand('backup'), cb);
         break;
