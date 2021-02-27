@@ -1,4 +1,8 @@
 # val-bot
+![Screenshot 2021-02-27 170759](https://user-images.githubusercontent.com/6485269/109400375-cf5eac00-791e-11eb-8c1e-ce6f49330bea.jpg)
+
+
+
 
 discord bot to run lgsm server commands for valheim. uses node, pm2 and gamedig
 
