@@ -1,3 +1,4 @@
+const process = require('process');
 const { exec } = require('child_process');
 const { address } = require('ip');
 const Discord = require('discord.js');
@@ -193,5 +194,4 @@ client.on('message', (message) => {
 client.once('ready', () => {
   console.log('val-bot is online!');
 });
-
-client.login('ODE0MjUxOTc1NjgzMjExMjY1.YDbJPw.T88DsNiPZJ-W9cIsLPQvEOHOG8Y');
+client.login(process.env.TOKEN);

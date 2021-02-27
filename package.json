@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start ./index.js --watch --name val-bot",
+    "start": "TOKEN=$TOKEN pm2 start ./index.js --watch --name val-bot",
     "stop": "pm2 stop val-bot",
     "reload": "pm2 reload val-bot",
     "status": "pm2 logs",
