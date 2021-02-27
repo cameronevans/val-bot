@@ -5,10 +5,11 @@ discord bot to run lgsm server commands for valheim. uses node, pm2 and gamedig
 - install node & npm on your server
 - log into your server as `vhserver`
 - clone this repo
-- `cd ./vh-bot`
+- `cd ./val-bot`
 - `npm i`
+- create a discord bot, add to your server & copy the token to paste into the next command
 - `TOKEN=PutYourDiscordBotTokenHere npm run start`
-- add bot to your server, message `!help` for list of commands
+- message `!help` for list of commands
 
 ### commands
 
