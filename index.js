@@ -1,6 +1,8 @@
 const { exec } = require('child_process');
+const { address } = require('ip');
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const gamedig = require('gamedig');
 
 const VHSERVER = '/home/vhserver/vhserver';
 const help = '!help';
@@ -18,6 +20,7 @@ const listBackup = '!list-backup';
 const checkUpdate = '!check-update';
 const update = '!update';
 const updateLGSM = '!update-lgsm';
+const players = '!players';
 
 const commands = [
   help,
@@ -28,6 +31,7 @@ const commands = [
   start,
   stop,
   restart,
+  players,
 ];
 const adminCommands = [
   netstat,
@@ -46,6 +50,7 @@ const verbose = [
   [start, 'starts the valheim server'],
   [stop, 'stops the valheim server gracefully'],
   [restart, 'restarts the valheim server'],
+  [players, 'display current player count'],
 ];
 const confirmationMessages = [
   'One moment please...',
@@ -66,8 +71,21 @@ const confirmationMessages = [
 const vhserverCommand = (command) => `${VHSERVER} ${command}`;
 const grepDetails = (grep, lines = 8) =>
   /* eslint-disable-next-line no-useless-escape */
-  `/home/vhserver/vhserver dt | grep -A ${lines} '${grep}' | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`;
+  `/home/vhserver/vhserver dt | grep -A ${lines} '${grep}'`;
 const formatter = (message) => `\`\`\`\n${message}\n\`\`\``;
+const getState = (cb) => {
+  gamedig
+    .query({
+      type: 'valheim',
+      host: address(),
+    })
+    .then((state) => {
+      cb(null, state);
+    })
+    .catch((error) => {
+      cb(`Cannot query server, error: ${JSON.stringify(error)}`);
+    });
+};
 
 client.on('message', (message) => {
   const confirmMessage = () =>
@@ -155,7 +173,18 @@ client.on('message', (message) => {
         confirmMessage();
         exec(vhserverCommand('backup'), cb);
         break;
-
+      case players:
+        confirmMessage();
+        getState((error, { raw: { numplayers } = {} } = {}) => {
+          if (error) {
+            cb(error);
+          } else if (numplayers === undefined) {
+            cb('Sorry, `raw.playercount` not found');
+          } else {
+            cb(null, `Current player count: ${numplayers}`);
+          }
+        });
+        break;
       default:
     }
   }

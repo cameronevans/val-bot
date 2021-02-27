@@ -22,6 +22,7 @@
   "homepage": "https://github.com/cameronevans/val-bot#readme",
   "dependencies": {
     "discord.js": "^12.5.1",
+    "gamedig": "^3.0.0",
     "pm2": "^4.5.4"
   },
   "devDependencies": {
