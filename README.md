@@ -17,7 +17,7 @@ discord bot to run lgsm server commands for valheim. uses node, pm2 and gamedig
 
 ### commands
 
-- `npm run start`: run val-bot
+- `npm run start`: run val-bot (note: pm2 will cache the token so it is only needed once, delete the process if you need to update the token)
 - `npm run stop`: stop val-bot
 - `npm run reload`: stop & start val-bot
 - `npm run status`: check recent pm2 logs
