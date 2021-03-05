@@ -38,6 +38,7 @@ const adminCommands = [
   netstat,
   validate,
   backup,
+  listBackup,
   checkUpdate,
   update,
   updateLGSM,
