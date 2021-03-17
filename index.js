@@ -5,6 +5,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const gamedig = require('gamedig');
 
+const allowedChannels = ['814612642948972654', '814331668239614015'];
 const VHSERVER = '/home/vhserver/vhserver';
 const help = '!help';
 const helpVerbose = '!help-verbose';
@@ -90,104 +91,106 @@ const getState = (cb) => {
 };
 
 client.on('message', (message) => {
-  const confirmMessage = () =>
-    message.channel.send(
-      confirmationMessages[
-        Math.floor(Math.random() * confirmationMessages.length)
-      ]
-    );
-  const cb = (error, stdout, stderr) => {
-    if (error) {
-      message.channel.send(formatter(`error: ${error.message}`));
-      return;
-    }
-    if (stderr) {
-      message.channel.send(formatter(`stderr: ${stderr}`));
-      return;
-    }
-    message.channel.send(formatter(stdout));
-  };
+  if (allowedChannels.includes(message.channel.id)) {
+    const confirmMessage = () =>
+      message.channel.send(
+        confirmationMessages[
+          Math.floor(Math.random() * confirmationMessages.length)
+        ]
+      );
+    const cb = (error, stdout, stderr) => {
+      if (error) {
+        message.channel.send(formatter(`error: ${error.message}`));
+        return;
+      }
+      if (stderr) {
+        message.channel.send(formatter(`stderr: ${stderr}`));
+        return;
+      }
+      message.channel.send(formatter(stdout));
+    };
 
-  if ([...commands, ...adminCommands].includes(message.content)) {
-    switch (message.content) {
-      case help:
-        message.channel
-          .send(`Hi! I can communicate with the Valheim server for you.\nCommands: \`${commands.join(
-          '`, `'
-        )}\`
-        `);
-        break;
-      case helpVerbose:
-        message.channel
-          .send(`Hi! I can communicate with the Valheim server for you.\n${verbose
-          .map(([command, description]) => `\`${command}\`: ${description}`)
-          .join('\n')}
-        `);
-        break;
-      case helpAdmin:
-        message.channel.send(
-          `Admin commands **(use at your own risk)**: \`${adminCommands.join(
+    if ([...commands, ...adminCommands].includes(message.content)) {
+      switch (message.content) {
+        case help:
+          message.channel
+            .send(`Hi! I can communicate with the Valheim server for you.\nCommands: \`${commands.join(
             '`, `'
-          )}\``
-        );
-        break;
-      case status:
-        confirmMessage();
-        exec(grepDetails('Valheim Server Details'), cb);
-        break;
-      case usage:
-        confirmMessage();
-        exec(grepDetails('Game Server Resource Usage'), cb);
-        break;
-      case start:
-        confirmMessage();
-        exec(vhserverCommand('start'), cb);
-        break;
-      case stop:
-        confirmMessage();
-        exec(vhserverCommand('stop'), cb);
-        break;
-      case restart:
-        confirmMessage();
-        exec(vhserverCommand('restart'), cb);
-        break;
-      case netstat:
-        confirmMessage();
-        exec('netstat -atunp | grep valheim', cb);
-        break;
-      case validate:
-        confirmMessage();
-        exec(vhserverCommand('validate'), cb);
-        break;
-      case checkUpdate:
-        confirmMessage();
-        exec(vhserverCommand('check-update'), cb);
-        break;
-      case update:
-        confirmMessage();
-        exec(vhserverCommand('update'), cb);
-        break;
-      case listBackup:
-        confirmMessage();
-        exec(grepDetails('Backups'), 4, cb);
-        break;
-      case backup:
-        confirmMessage();
-        exec(vhserverCommand('backup'), cb);
-        break;
-      case players:
-        confirmMessage();
-        getState((error, { raw: { numplayers } = {} } = {}) => {
-          if (error) {
-            cb(error);
-          } else if (numplayers === undefined) {
-            cb('Sorry, `raw.playercount` not found');
-          } else {
-            cb(null, `Current player count: ${numplayers}`);
-          }
-        });
-        break;
-      default:
+          )}\`
+        `);
+          break;
+        case helpVerbose:
+          message.channel
+            .send(`Hi! I can communicate with the Valheim server for you.\n${verbose
+            .map(([command, description]) => `\`${command}\`: ${description}`)
+            .join('\n')}
+        `);
+          break;
+        case helpAdmin:
+          message.channel.send(
+            `Admin commands **(use at your own risk)**: \`${adminCommands.join(
+              '`, `'
+            )}\``
+          );
+          break;
+        case status:
+          confirmMessage();
+          exec(grepDetails('Valheim Server Details'), cb);
+          break;
+        case usage:
+          confirmMessage();
+          exec(grepDetails('Game Server Resource Usage'), cb);
+          break;
+        case start:
+          confirmMessage();
+          exec(vhserverCommand('start'), cb);
+          break;
+        case stop:
+          confirmMessage();
+          exec(vhserverCommand('stop'), cb);
+          break;
+        case restart:
+          confirmMessage();
+          exec(vhserverCommand('restart'), cb);
+          break;
+        case netstat:
+          confirmMessage();
+          exec('netstat -atunp | grep valheim', cb);
+          break;
+        case validate:
+          confirmMessage();
+          exec(vhserverCommand('validate'), cb);
+          break;
+        case checkUpdate:
+          confirmMessage();
+          exec(vhserverCommand('check-update'), cb);
+          break;
+        case update:
+          confirmMessage();
+          exec(vhserverCommand('update'), cb);
+          break;
+        case listBackup:
+          confirmMessage();
+          exec(grepDetails('Backups'), 4, cb);
+          break;
+        case backup:
+          confirmMessage();
+          exec(vhserverCommand('backup'), cb);
+          break;
+        case players:
+          confirmMessage();
+          getState((error, { raw: { numplayers } = {} } = {}) => {
+            if (error) {
+              cb(error);
+            } else if (numplayers === undefined) {
+              cb('Sorry, `raw.playercount` not found');
+            } else {
+              cb(null, `Current player count: ${numplayers}`);
+            }
+          });
+          break;
+        default:
+      }
     }
   }
 });
