@@ -169,6 +169,10 @@ client.on('message', (message) => {
           confirmMessage();
           exec(vhserverCommand('update'), cb);
           break;
+        case updateLGSM:
+          confirmMessage();
+          exec(vhserverCommand('update-lgsm'), cb);
+          break;
         case listBackup:
           confirmMessage();
           exec(grepDetails('Backups'), 4, cb);
