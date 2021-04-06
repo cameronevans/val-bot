@@ -75,7 +75,7 @@ const vhserverCommand = (command) => `${VHSERVER} ${command}`;
 const grepDetails = (grep, lines = 8) =>
   /* eslint-disable-next-line no-useless-escape */
   `/home/vhserver/vhserver dt | grep -A ${lines} '${grep}'`;
-const formatter = (message) => `\`\`\`\n${message}\n\`\`\``;
+const formatter = (message) => `\`\`\`\n${message.slice(-200)}\n\`\`\``;
 const getState = (cb) => {
   gamedig
     .query({
