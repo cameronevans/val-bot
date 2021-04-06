@@ -6,6 +6,7 @@ const client = new Discord.Client();
 const gamedig = require('gamedig');
 
 const allowedChannels = ['814612642948972654', '814331668239614015'];
+const DEFAULT_STDOUT_LINES = 8;
 const VHSERVER = '/home/vhserver/vhserver';
 const help = '!help';
 const helpVerbose = '!help-verbose';
@@ -72,10 +73,14 @@ const confirmationMessages = [
   'Affirmative...',
 ];
 const vhserverCommand = (command) => `${VHSERVER} ${command}`;
-const grepDetails = (grep, lines = 8) =>
+const grepDetails = (grep, lines = DEFAULT_STDOUT_LINES) =>
   /* eslint-disable-next-line no-useless-escape */
   `/home/vhserver/vhserver dt | grep -A ${lines} '${grep}'`;
-const formatter = (message) => `\`\`\`\n${message.slice(-200)}\n\`\`\``;
+const formatter = (message, lines = DEFAULT_STDOUT_LINES) =>
+  `\`\`\`\n${message
+    .split('\n')
+    .slice(lines * -1)
+    .join('\n')}\n\`\`\``;
 const getState = (cb) => {
   gamedig
     .query({
